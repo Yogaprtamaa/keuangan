@@ -38,15 +38,35 @@ export default function DashboardKeuangan() {
   const [showBalance, setShowBalance] = useState(true)
   const queryClient = useQueryClient()
 
-  const { data: transaksi = [], isLoading } = useQuery<Transaksi[]>({
+  const { data: transaksi = [], isLoading, error } = useQuery<Transaksi[]>({
     queryKey: ['transaksi'],
-    queryFn: async () => (await axios.get('/api/transaksi')).data,
+    queryFn: async () => {
+      try {
+        const res = await axios.get('/api/transaksi');
+        return res.data;
+      } catch (error) {
+        console.error('Error fetching transaksi:', error);
+        throw error;
+      }
+    },
+    retry: 2,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   })
 
   const { data: report } = useQuery({
     queryKey: ['report', reportPeriod],
-    queryFn: async () => (await axios.get(`/api/transaksi/summary?period=${reportPeriod}`)).data,
+    queryFn: async () => {
+      try {
+        const res = await axios.get(`/api/transaksi/summary?period=${reportPeriod}`);
+        return res.data;
+      } catch (error) {
+        console.error('Error fetching report:', error);
+        throw error;
+      }
+    },
     enabled: reportOpen,
+    retry: 2,
+    staleTime: 1000 * 60 * 2, // 2 minutes
   })
 
   const mutation = useMutation({
