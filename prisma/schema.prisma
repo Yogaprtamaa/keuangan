@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+}
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Transaksi {
+  id          String   @id @default(cuid())
+  keterangan  String
+  jumlah      Float
+  tipe        String   // "MASUK" atau "KELUAR"
+  metode      String?  // "online" atau "offline"
+  biayaAdmin  Float    @default(0)
+  totalBersih Float
+  tanggal     DateTime @default(now())
+  createdAt   DateTime @default(now())
+}
