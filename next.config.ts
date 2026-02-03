@@ -5,11 +5,12 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   serverExternalPackages: ['@prisma/client', 'prisma'],
-  // Ensure API routes are not pre-rendered
-  experimental: {
-    outputFileTracingIncludes: {
-      '/api/**/*': ['./node_modules/**/*'],
-    },
+  outputFileTracingIncludes: {
+    '/api/**/*': ['./node_modules/**/*'],
+  },
+  // Use Turbopack config instead of webpack
+  turbopack: {
+    resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
   },
 };
 
