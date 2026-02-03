@@ -29,9 +29,10 @@ export async function POST(req: Request) {
       keterangan: body.keterangan,
       jumlah: jumlah,
       tipe: tipe,
-      metode: body.metode || null,
+      metode: body.metode || undefined,
       biayaAdmin: biayaAdmin,
       totalBersih: totalBersih,
+      tanggal: body.tanggal ? new Date(body.tanggal) : new Date(),
     });
     return NextResponse.json(newTransaksi);
   } catch (error) {

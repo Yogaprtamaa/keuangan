@@ -5,14 +5,6 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   // Force server-only packages to stay on server
-  experimental: {
-    serverComponentsExternalPackages: [
-      '@prisma/client', 
-      'prisma', 
-      '@prisma/engines',
-      '@prisma/engines-version'
-    ],
-  },
   serverExternalPackages: [
     '@prisma/client', 
     'prisma',
@@ -26,6 +18,7 @@ const nextConfig: NextConfig = {
   // Use Turbopack config instead of webpack
   turbopack: {
     resolveExtensions: ['.ts', '.tsx', '.js', '.jsx', '.json'],
+    root: './keuangan',
   },
 };
 

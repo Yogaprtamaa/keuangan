@@ -10,15 +10,39 @@ export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
     log: ['query', 'error', 'warn'],
+    datasourceUrl: process.env.DATABASE_URL,
   });
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
+// Initialize database on first connection
+let dbInitialized = false;
+
+async function initializeDb() {
+  if (dbInitialized) return;
+  
+  try {
+    // Try to connect to the database
+    await prisma.$connect();
+    console.log('Database connected successfully');
+    dbInitialized = true;
+  } catch (error) {
+    console.error('Database initialization error:', error);
+    throw error;
+  }
+}
+
 // Helper functions to keep API routes lightweight
 export async function getAllTransaksi() {
-  return await prisma.transaksi.findMany({
-    orderBy: { tanggal: 'desc' }
-  });
+  try {
+    await initializeDb();
+    return await prisma.transaksi.findMany({
+      orderBy: { tanggal: 'desc' }
+    });
+  } catch (error) {
+    console.error('getAllTransaksi error:', error);
+    throw error;
+  }
 }
 
 export async function createTransaksi(data: {
@@ -28,8 +52,21 @@ export async function createTransaksi(data: {
   metode?: string;
   biayaAdmin: number;
   totalBersih: number;
+  tanggal?: Date;
 }) {
-  return await prisma.transaksi.create({ data });
+  try {
+    await initializeDb();
+    console.log('Creating transaksi with data:', data);
+    return await prisma.transaksi.create({ 
+      data: {
+        ...data,
+        tanggal: data.tanggal || new Date()
+      }
+    });
+  } catch (error) {
+    console.error('createTransaksi error:', error);
+    throw error;
+  }
 }
 
 export async function deleteTransaksi(id: string) {
