@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { getAllTransaksi, createTransaksi, deleteTransaksi } from '@/lib/prisma-service';
 
 // Force dynamic rendering for this API route
 export const dynamic = 'force-dynamic';
@@ -7,9 +7,7 @@ export const runtime = 'nodejs';
 
 export async function GET() {
   try {
-    const data = await prisma.transaksi.findMany({
-      orderBy: { tanggal: 'desc' },
-    });
+    const data = await getAllTransaksi();
     return NextResponse.json(data);
   } catch (error) {
     console.error("DB_FETCH_ERROR:", error);
@@ -27,16 +25,13 @@ export async function POST(req: Request) {
     const biayaAdmin = tipe === 'KELUAR' && body.metode === 'online' ? jumlah * 0.35 : 0;
     const totalBersih = tipe === 'KELUAR' ? jumlah : jumlah - biayaAdmin;
 
-    const newTransaksi = await prisma.transaksi.create({
-      data: {
-        keterangan: body.keterangan,
-        jumlah: jumlah,
-        tipe: tipe,
-        metode: body.metode || null,
-        biayaAdmin: biayaAdmin,
-        totalBersih: totalBersih,
-        tanggal: new Date(body.tanggal || new Date()),
-      },
+    const newTransaksi = await createTransaksi({
+      keterangan: body.keterangan,
+      jumlah: jumlah,
+      tipe: tipe,
+      metode: body.metode || null,
+      biayaAdmin: biayaAdmin,
+      totalBersih: totalBersih,
     });
     return NextResponse.json(newTransaksi);
   } catch (error) {
@@ -54,9 +49,7 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: "ID diperlukan" }, { status: 400 });
     }
 
-    const deletedTransaksi = await prisma.transaksi.delete({
-      where: { id },
-    });
+    const deletedTransaksi = await deleteTransaksi(id);
 
     return NextResponse.json(deletedTransaksi);
   } catch (error) {

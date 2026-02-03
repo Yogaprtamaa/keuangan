@@ -1,8 +1,16 @@
 {
   "functions": {
-    "app/api/**/*.ts": {
+    "app/api/transaksi/route.ts": {
       "memory": 512,
-      "maxDuration": 10
+      "maxDuration": 10,
+      "includeFiles": "prisma/**",
+      "excludeFiles": "**/*.test.ts"
+    },
+    "app/api/transaksi/summary/route.ts": {
+      "memory": 256,
+      "maxDuration": 10,
+      "includeFiles": "prisma/**",
+      "excludeFiles": "**/*.test.ts"
     }
   },
   "build": {

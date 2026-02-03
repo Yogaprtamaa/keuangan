@@ -4,9 +4,24 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  serverExternalPackages: ['@prisma/client', 'prisma'],
+  // Force server-only packages to stay on server
+  experimental: {
+    serverComponentsExternalPackages: [
+      '@prisma/client', 
+      'prisma', 
+      '@prisma/engines',
+      '@prisma/engines-version'
+    ],
+  },
+  serverExternalPackages: [
+    '@prisma/client', 
+    'prisma',
+    '@prisma/engines', 
+    'framer-motion',
+    'lucide-react'
+  ],
   outputFileTracingIncludes: {
-    '/api/**/*': ['./node_modules/**/*'],
+    '/api/**/*': ['./prisma/**/*'],
   },
   // Use Turbopack config instead of webpack
   turbopack: {

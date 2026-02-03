@@ -1,6 +1,7 @@
 generator client {
   provider   = "prisma-client-js"
   engineType = "library"  // Use lighter engine to avoid bundling full Rust binary
+  previewFeatures = ["driverAdapters"]  // Prepare for Accelerate if needed
 }
 datasource db {
   provider = "sqlite"
