@@ -36,8 +36,15 @@ export async function GET(req: Request) {
     });
 
     // Calculate summary
+    interface SummaryData {
+      totalPenjualan: number;
+      totalPotongan: number;
+      totalBersih: number;
+      totalPengeluaran: number;
+    }
+
     const summary = data.reduce(
-      (acc, curr) => {
+      (acc: SummaryData, curr) => {
         if (curr.tipe === 'MASUK') {
           acc.totalPenjualan += curr.jumlah;
           acc.totalPotongan += curr.biayaAdmin;
